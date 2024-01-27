@@ -47,8 +47,6 @@ class Floor(pygame.sprite.Sprite):
             self.image = load_image("светлый пол.png")
         elif type == '3':
             self.image = load_image("темно-светлый пол.png")
-        elif type == '4':
-            self.image = load_image("темно-светлый пол.png")
         self.rect = self.image.get_rect()
         self.rect.x = pos[0] * converter(80, 'x')
         self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'x')
