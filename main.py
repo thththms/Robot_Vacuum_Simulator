@@ -24,7 +24,6 @@ pygame.init()
 size = width, height = pygame.display.Info().current_w, pygame.display.Info().current_h
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
-border_sprites = pygame.sprite.Group()
 robot_sprite = pygame.sprite.Group()
 trash_sprites = pygame.sprite.Group()
 robot_base_sprites = pygame.sprite.Group()
@@ -198,14 +197,12 @@ class LvlButton(pygame.sprite.Sprite):
                 data = f.readlines()
             if self.type == 1:
                 running = False
-            border_sprites.remove(border_sprites.sprites())
             robot_sprite.remove(robot_sprite.sprites())
             trash_sprites.remove(trash_sprites.sprites())
             robot_base_sprites.remove(robot_base_sprites.sprites())
             button_sprites.remove(button_sprites.sprites())
             furniture_sprites.remove(furniture_sprites.sprites())
             floor_sprites.remove(floor_sprites.sprites())
-
             borders.remove(borders.sprites())
             lvl_button_sprites.remove(lvl_button_sprites.sprites())
 
