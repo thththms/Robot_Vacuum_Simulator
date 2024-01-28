@@ -374,10 +374,12 @@ while running:
             running = False
 
     pygame.display.flip()
+
 for i in range(1, 10):
     LvlButton(i, (converter(i * 190 - 70, 'x'), converter(950, 'y')), type=1)
 
 running = True
+
 while running:
     screen.fill('white')
     for event in pygame.event.get():
@@ -390,39 +392,10 @@ while running:
     lvl_button_sprites.draw(screen)
     pygame.display.flip()
 
-for y in range(13):
-    for x in range(21):
-        if data[y][x] != '2' and data[y][x] != '1' and data[y][x] != '3':
-            Floor((x, y), '0')
-        elif data[y][x] == data[y][x] != '2' and data[y][x] != '1' and data[y][x] != '0':
-            Floor((x, y), '3')
-        if data[y][x] == '.':
-            Floor((x, y), '3')
-        if data[y][x] == '1':
-            board = Board(x, y)
-        if data[y][x] == 'q':
-            map_trash_box_maker((x, y), 'q')
-        if data[y][x] == 'w':
-            map_trash_box_maker((x, y), 'w')
-        if data[y][x] == 'e':
-            map_trash_box_maker((x, y), 'e')
-        if data[y][x] == 't':
-            Furniture((x, y), 't')
-        if data[y][x] == 'ш':
-            Furniture((x, y), 'ш')
-        if data[y][x] == 'а':
-            Furniture((x, y), 'а')
-        if data[y][x] == 'и':
-            Furniture((x, y), 'и')
-        if data[y][x] == 'м':
-            RobotBase((x, y))
-
-
 running = True
 clock = pygame.time.Clock()
 key = 'w'
 all_trash_pieces = len(trash_sprites.sprites())
-
 
 while running:
     screen.fill('white')
