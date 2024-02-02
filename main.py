@@ -44,33 +44,33 @@ class Floor(pygame.sprite.Sprite):
     def __init__(self, pos, type):
         super().__init__(floor_sprites)
         if type == '0':
-            self.image = load_image("светлый пол.png")
+            self.image = pygame.transform.scale(load_image("светлый пол.png"), (converter(80, 'x'), converter(80, 'y')))
         elif type == '3':
-            self.image = load_image("темно-светлый пол.png")
+            self.image = pygame.transform.scale(load_image("темно-светлый пол.png"), (converter(80, 'x'), converter(80, 'y')))
         self.rect = self.image.get_rect()
-        self.rect.x = pos[0] * converter(80, 'x')
-        self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'x')
+        self.rect.x = pos[0] * int(converter(80, 'x'))
+        self.rect.y = int(converter(20, 'y')) + pos[1] * int(converter(80, 'y'))
 
 
 class RobotBase(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__(robot_base_sprites)
-        self.image = load_image("мусорка.png")
+        self.image = pygame.transform.scale(load_image("мусорка.png"), (converter(70, 'x'), converter(70, 'y')))
         self.rect = self.image.get_rect()
         self.rect.x = pos[0] * converter(80, 'x')
-        self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'x')
+        self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'y')
 
 
 class Cistern(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__(cistern_sprites)
-        self.image = pygame.transform.scale(load_image('Лоу.png'), (80, 100))
+        self.image = pygame.transform.scale(load_image('Лоу.png'), (converter(80, 'x'), converter(100, 'y')))
         self.rect = self.image.get_rect()
-        self.rect.x = 1735
-        self.rect.y = 50
+        self.rect.x = converter(1735, 'x')
+        self.rect.y = converter(50, 'y')
 
     def update(self, level):
-        self.image = pygame.transform.scale(load_image(level), (130, 150))
+        self.image = pygame.transform.scale(load_image(level), (converter(130, 'x'), converter(150, 'y')))
 
 
 cistern = Cistern()
@@ -80,19 +80,20 @@ class Board(pygame.sprite.Sprite):
     def __init__(self, width, height):
         super().__init__(borders)
         global data
-        self.width = int(converter(width, 'x'))
-        self.height = int(converter(height, 'y'))
+        self.width = width
+        self.height = height
 
         self.board = data
-        self.cell_size = int(converter(80, 'x'))
+        self.cell_size_x = int(converter(80, 'x'))
+        self.cell_size_y = int(converter(80, 'y'))
         self.add(borders)
-        self.image = pygame.Surface([self.cell_size, self.cell_size])
-        self.rect = pygame.Rect(self.width * self.cell_size, int(converter(20, 'y')) + self.height * self.cell_size,
-                                self.cell_size, self.cell_size)
+        self.image = pygame.Surface([self.cell_size_x, self.cell_size_y])
+        self.rect = pygame.Rect(self.width * self.cell_size_x, int(converter(20, 'y')) + self.height * self.cell_size_y,
+                                self.cell_size_x, self.cell_size_y)
 
 
 class Trash(pygame.sprite.Sprite):
-    image = load_image("trash_piece.png")
+    image = pygame.transform.scale(load_image("trash_piece.png"), (converter(4, 'x'), converter(4, 'y')))
 
     def __init__(self, pos):
         super().__init__(trash_sprites)
@@ -102,25 +103,26 @@ class Trash(pygame.sprite.Sprite):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
 
-    def update(self):
-        self.rect = self.rect.move(0, 1)
-
 
 def trash_box_maker(pos, box_size, type):
+    global width, height
     box_width = box_size[0]
     box_height = box_size[1]
     if type == 'q':
-        coef1 = 350
-        coef2 = 24
-        coef3 = 350
+        k = 1 if width == 1920 and height == 1080 else 3
+        coef1 = k * width * height * 350 / (1920 * 1080)
+        coef2 = converter(24, 'x')
+        coef3 = k * width * height * 450 / (1920 * 1080)
     elif type == 'w':
-        coef1 = 1000
-        coef2 = 35
-        coef3 = 900
+        k = 1 if width == 1920 and height == 1080 else 2
+        coef1 = k * width * height * 1000 / (1920 * 1080)
+        coef2 = converter(35, 'x')
+        coef3 = k * width * height * 900 / (1920 * 1080)
     elif type == 'e':
-        coef1 = 1100
-        coef2 = 45
-        coef3 = 1200
+        k = 1 if width == 1920 and height == 1080 else 4
+        coef1 = k * width * height * 1100 / (1920 * 1080)
+        coef2 = converter(45, 'x')
+        coef3 = k * width * height * 1200 / (1920 * 1080)
     for i in range(0, box_height, 5):
         for j in range(box_width - (box_width // box_height * i), 0, -box_width // 16):
             a = randint(0, i * j)
@@ -144,7 +146,8 @@ def map_trash_box_maker(pos, type):
     if type == 'e':
         cell_size1 = int(converter(160, 'x'))
         cell_size2 = int(converter(160, 'y'))
-    trash_box_maker((pos[0] * 80 + 20, converter(20, 'y') + pos[1] * 80), (cell_size1, cell_size2), type)
+    trash_box_maker((pos[0] * converter(80, 'x'),
+                     converter(5, 'y') + pos[1] * converter(80, 'y')), (cell_size1, cell_size2), type)
 
 
 class Furniture(pygame.sprite.Sprite):
@@ -152,28 +155,29 @@ class Furniture(pygame.sprite.Sprite):
         super().__init__(furniture_sprites)
 
         if type == 't':
-            self.image = load_image("tv.png")
+            self.image = pygame.transform.scale(load_image("tv.png"), (converter(120, 'x'), converter(110, 'y')))
             self.rect = self.image.get_rect()
             self.rect.x = pos[0] * converter(80, 'x')
-            self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'x')
+            self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'y')
             self.mask = pygame.mask.from_surface(self.image)
         if type == 'ш':
-            self.image = load_image("шкаф.png")
+            self.image = pygame.transform.scale(load_image("шкаф.png"), (converter(80, 'x'), converter(130, 'y')))
             self.rect = self.image.get_rect()
             self.rect.x = pos[0] * converter(80, 'x')
-            self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'x')
+            self.rect.y = converter(20, 'y') + pos[1] * converter(80, 'y')
             self.mask = pygame.mask.from_surface(self.image)
         if type == 'а':
-            self.image = load_image("аквариум.png")
+            self.image = pygame.transform.scale(load_image("аквариум.png"), (converter(80, 'x'), converter(100, 'y')))
             self.rect = self.image.get_rect()
             self.rect.x = pos[0] * converter(80, 'x')
-            self.rect.y = converter(70, 'y') + pos[1] * converter(80, 'x')
+            self.rect.y = converter(70, 'y') + pos[1] * converter(80, 'y')
             self.mask = pygame.mask.from_surface(self.image)
         if type == 'и':
-            self.image = load_image("игровой автомат.png")
+            self.image = pygame.transform.scale(load_image("игровой автомат.png"), (converter(80, 'x'),
+                                                                                    converter(120, 'y')))
             self.rect = self.image.get_rect()
             self.rect.x = pos[0] * converter(80, 'x')
-            self.rect.y = converter(50, 'y') + pos[1] * converter(80, 'x')
+            self.rect.y = converter(50, 'y') + pos[1] * converter(80, 'y')
 
 
 class LvlButton(pygame.sprite.Sprite):
@@ -246,7 +250,7 @@ class LvlButton(pygame.sprite.Sprite):
 
 
 class Robot(pygame.sprite.Sprite):
-    image = load_image("robot_frame_2.png")
+    image = pygame.transform.scale(load_image("robot_frame_2.png") , (converter(65, 'x'), converter(65, 'y')))
 
     def __init__(self, *group):
         super().__init__(*group)
@@ -257,12 +261,13 @@ class Robot(pygame.sprite.Sprite):
             curr_level == 7 or curr_level == 3 else converter(650, 'y') if curr_level == 9 else converter(300, 'y')
         self.frames = [f'robot_frame_{i}.png' for i in range(1, 13)]
         self.cur_frame = 0
-        self.image = load_image(self.frames[self.cur_frame])
+        self.image = pygame.transform.scale(load_image(self.frames[self.cur_frame]), (converter(65, 'x'), converter(65, 'y')))
         self.rotation = 'w'
         self.mask = pygame.mask.from_surface(self.image)
 
     def update(self, x, y, rot):
         global v, key, all_trash_pieces, can_eat_trash
+        self.mask = pygame.mask.from_surface(self.image)
         if can_eat_trash:
             if pygame.sprite.spritecollide(self, trash_sprites, True):
                 if v > 60:
@@ -284,17 +289,17 @@ class Robot(pygame.sprite.Sprite):
                 y = 0
                 x = -2
         self.cur_frame = (self.cur_frame + 1) % len(self.frames)
-        self.image = load_image(self.frames[self.cur_frame])
+        self.image = pygame.transform.scale(load_image(self.frames[self.cur_frame]), (converter(65, 'x'), converter(65, 'y')))
         self.rect.x += x
         self.rect.y += y
         if rot == 'w':
-            self.image = pygame.transform.rotate(load_image(self.frames[self.cur_frame]), 0)
+            self.image = pygame.transform.scale(pygame.transform.rotate(load_image(self.frames[self.cur_frame]), 0), (converter(65, 'x'), converter(65, 'y')))
         if rot == 'a':
-            self.image = pygame.transform.rotate(load_image(self.frames[self.cur_frame]), 90)
+            self.image = pygame.transform.scale(pygame.transform.rotate(load_image(self.frames[self.cur_frame]), 90), (converter(65, 'x'), converter(65, 'y')))
         if rot == 's':
-            self.image = pygame.transform.rotate(load_image(self.frames[self.cur_frame]), 180)
+            self.image = pygame.transform.scale(pygame.transform.rotate(load_image(self.frames[self.cur_frame]), 180), (converter(65, 'x'), converter(65, 'y')))
         if rot == 'd':
-            self.image = pygame.transform.rotate(load_image(self.frames[self.cur_frame]), -90)
+            self.image = pygame.transform.scale(pygame.transform.rotate(load_image(self.frames[self.cur_frame]), -90), (converter(65, 'x'), converter(65, 'y')))
         self.rotation = rot
 
 
@@ -446,8 +451,9 @@ while running:
 
     clock.tick(fps)
 
-    if len(trash_sprites.sprites()) == 0:
-        pygame.draw.rect(screen, (0, 0, 0), (300, 400, 1300, 200))
+    if len(trash_sprites.sprites()) <= 2:
+        pygame.draw.rect(screen, (0, 0, 0), (converter(300, 'x'), converter(400, 'y'), converter(1300, 'x'),
+                                             converter(200, 'y')))
         text_maker('Honk-Regular-VariableFont_MORF,SHLN.ttf', "LEVEL COMPLETED", (int(converter(350, 'x')),
                                                                                   int(converter(400, 'y'))), scale=160,
                    color=(0, 255, 165))
