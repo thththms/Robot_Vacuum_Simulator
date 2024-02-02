@@ -382,7 +382,6 @@ while running:
 
 for i in range(1, 10):
     LvlButton(i, (converter(i * 190 - 70, 'x'), converter(950, 'y')), type=1)
-
 running = True
 
 while running:
